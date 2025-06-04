@@ -7,7 +7,7 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // Global appearance controls etc
+  // Global Appearance Controls
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key});
 
-  // Starts when app opens
+  // App Start
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,9 +35,7 @@ class MyHomePage extends StatelessWidget {
           padding: EdgeInsets.zero,
           children: const [
             DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
+              decoration: BoxDecoration(color: Colors.blue),
               child: Text('Menu', style: TextStyle(color: Colors.white)),
             ),
             ListTile(
@@ -51,10 +49,7 @@ class MyHomePage extends StatelessWidget {
           ],
         ),
       ),
-      body: const Center(
-        child: Text('Videos Here...'),
-      ),
+      body: const Center(child: Text('Videos Here...')),
     );
   }
 }
-
