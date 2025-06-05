@@ -39,17 +39,49 @@ class MyHomePage extends StatelessWidget {
               child: Text('Menu', style: TextStyle(color: Colors.white)),
             ),
             ListTile(
-              leading: Icon(Icons.home),
-              title: Text('Home'),
+              leading: Icon(Icons.language),
+              title: Text('Language'),
             ),
             ListTile(
-              leading: Icon(Icons.settings),
-              title: Text('Settings'),
+              leading: Icon(Icons.card_travel),
+              title: Text('Visit'),
+            ),
+            ListTile(
+              leading: Icon(Icons.new_releases),
+              title: Text('New For 2025'),
+            ),
+            ListTile(
+              leading: Icon(Icons.house),
+              title: Text('Stay'),
+            ),
+            ListTile(
+              leading: Icon(Icons.emoji_food_beverage),
+              title: Text('Eat & Shop'),
+            ),
+            ListTile(
+              leading: Icon(Icons.timer),
+              title: Text('Admission & Opening Times'),
+            ),
+            ListTile(
+              leading: Icon(Icons.copyright),
+              title: Text('Copyright'),
             ),
           ],
         ),
       ),
-      body: const Center(child: Text('Videos Here...')),
+      // body: const Center(child: Text('[Videos Here]')),
+      // Need a list 1:10, which will display images 1:10 * current_language, linking to videos 1:10 (with sub track * language)
+      body: GridView.count(
+        crossAxisCount: 1,
+        children: List.generate(10, (index) {
+          return Center(
+            child: Text(
+              'Video $index',
+              style: TextTheme.of(context).headlineSmall,
+            ),
+          );
+        }),
+      ),
     );
   }
 }
