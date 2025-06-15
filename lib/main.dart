@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:provider/provider.dart';
+import 'language_selection_screen.dart';
+import 'language_provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => LanguageProvider(),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
+
 
   // Global Appearance Controls
   @override
@@ -17,7 +25,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
       ),
-      home: const MyHomePage(),
+      home: const LanguageSelectionScreen(),
     );
   }
 }
@@ -28,6 +36,10 @@ class MyHomePage extends StatelessWidget {
   // App Start
   @override
   Widget build(BuildContext context) {
+
+    final language = context.watch<LanguageProvider>().language; // Debug, checking lang works
+    print('Current Language: $language');
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Balmoral Castle'),
@@ -35,37 +47,36 @@ class MyHomePage extends StatelessWidget {
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.zero,
-          children: const [
-            DrawerHeader(
+          children: [
+            const DrawerHeader(
               decoration: BoxDecoration(color: Colors.blue),
               child: Text('Menu', style: TextStyle(color: Colors.white)),
             ),
             ListTile(
-              leading: Icon(Icons.language),
-              title: Text('Language'),
+              title: const Text('Language'),
+              onTap: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (_) => LanguageSelectionScreen()),
+                );
+              },
             ),
-            ListTile(
-              leading: Icon(Icons.card_travel),
+            const ListTile(
               title: Text('Visit'),
             ),
-            ListTile(
-              leading: Icon(Icons.new_releases),
+            const ListTile(
               title: Text('New For 2025'),
             ),
-            ListTile(
-              leading: Icon(Icons.house),
+            const ListTile(
               title: Text('Stay'),
             ),
-            ListTile(
-              leading: Icon(Icons.emoji_food_beverage),
+            const ListTile(
               title: Text('Eat & Shop'),
             ),
-            ListTile(
-              leading: Icon(Icons.timer),
+            const ListTile(
               title: Text('Admission & Opening Times'),
             ),
-            ListTile(
-              leading: Icon(Icons.copyright),
+            const ListTile(
               title: Text('Copyright'),
             ),
           ],
