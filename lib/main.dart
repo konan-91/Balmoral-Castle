@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'language_selection_screen.dart';
 import 'language_provider.dart';
+import 'visit_page.dart';
 
 void main() {
   runApp(
@@ -37,8 +38,8 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final language = context.watch<LanguageProvider>().language; // Debug, checking lang works
-    print('Current Language: $language');
+    final language = context.watch<LanguageProvider>().language;
+    print('Current Language: $language'); // Debug, verifying lang selection works
 
     return Scaffold(
       appBar: AppBar(
@@ -61,8 +62,16 @@ class MyHomePage extends StatelessWidget {
                 );
               },
             ),
-            const ListTile(
-              title: Text('Visit'),
+            ListTile(
+              title: const Text('Visit'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const VisitPage(title: 'Visit'),
+                  ),
+                );
+              },
             ),
             const ListTile(
               title: Text('New For 2025'),
