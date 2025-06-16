@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class VisitPage extends StatefulWidget {
   final String title;
@@ -50,8 +52,13 @@ class _VisitPageState extends State<VisitPage> {
               Container(
                 padding: const EdgeInsets.all(16),
                 color: Colors.grey[200],
-                child: Text(
-                  mainBody,
+                child: Linkify(
+                  text: mainBody,
+                  onOpen: (link) async {
+                    if (await canLaunchUrl(Uri.parse(link.url))) {
+                      await launchUrl(Uri.parse(link.url)); // Opens in browser
+                    }
+                  },
                   style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ),
@@ -59,8 +66,13 @@ class _VisitPageState extends State<VisitPage> {
               Container(
                 padding: const EdgeInsets.all(16),
                 color: Colors.grey[200],
-                child: Text(
-                  bottomBody,
+                child: Linkify(
+                  text: bottomBody,
+                  onOpen: (link) async {
+                    if (await canLaunchUrl(Uri.parse(link.url))) {
+                      await launchUrl(Uri.parse(link.url)); // Opens in browser
+                    }
+                  },
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
               )
