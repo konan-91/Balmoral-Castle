@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'language_selection_screen.dart';
 import 'language_provider.dart';
 import 'visit_page.dart';
+import 'new_page.dart';
 
 void main() {
   runApp(
@@ -73,8 +74,16 @@ class MyHomePage extends StatelessWidget {
                 );
               },
             ),
-            const ListTile(
-              title: Text('New For 2025'),
+            ListTile(
+              title: const Text('New for 2025'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const NewPage(title: 'New for 2025'),
+                  ),
+                );
+              }
             ),
             const ListTile(
               title: Text('Stay'),

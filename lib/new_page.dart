@@ -2,19 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
-// THIS SHOULD BE DELETED SOON, REPLACED BY VISIT_PAGE
+// Render [title]_1, _2, _3... Depending on how many are present!
 
-class VisitPage extends StatefulWidget {
+class NewPage extends StatefulWidget {
   final String title;
 
-  const VisitPage({super.key, required this.title});
+  const NewPage({super.key, required this.title});
 
   @override
-  State<VisitPage> createState() => _VisitPageState();
+  State<NewPage> createState() => _NewPageState();
 }
 
-class _VisitPageState extends State<VisitPage> {
+class _NewPageState extends State<NewPage> {
   String mainBody = '';
   String bottomBody = '';
   bool isLoading = true;
@@ -26,8 +27,9 @@ class _VisitPageState extends State<VisitPage> {
   }
 
   Future<void> _loadTexts() async {
-    final main = await rootBundle.loadString('assets/texts/visit_body.txt');
-    final bottom = await rootBundle.loadString('assets/texts/visit_body_2.txt');
+
+    final main = await rootBundle.loadString('assets/texts/{title}_{num}.txt');
+    final bottom = await rootBundle.loadString('assets/texts/new_body_2.txt');
     setState(() {
       mainBody = main;
       bottomBody = bottom;
@@ -54,35 +56,32 @@ class _VisitPageState extends State<VisitPage> {
               Container(
                 padding: const EdgeInsets.all(16),
                 color: Colors.grey[200],
-                child: Linkify(
-                  text: mainBody,
-                  onOpen: (link) async {
-                    if (await canLaunchUrl(Uri.parse(link.url))) {
-                      await launchUrl(Uri.parse(link.url)); // Opens in browser
+                child: MarkdownBody(
+                  data: mainBody,
+                  onTapLink: (text, href, _) async {
+                    if (await canLaunchUrl(Uri.parse(href!))) {
+                      await launchUrl(Uri.parse(href));
                     }
                   },
-                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ),
               const SizedBox(height: 20),
               Container(
                 padding: const EdgeInsets.all(16),
                 color: Colors.grey[200],
-                child: Linkify(
-                  text: bottomBody,
-                  onOpen: (link) async {
-                    if (await canLaunchUrl(Uri.parse(link.url))) {
-                      await launchUrl(Uri.parse(link.url)); // Opens in browser
+                child: MarkdownBody(
+                  data: bottomBody,
+                  onTapLink: (text, href, _) async {
+                    if (await canLaunchUrl(Uri.parse(href!))) {
+                      await launchUrl(Uri.parse(href));
                     }
                   },
-                  style: Theme.of(context).textTheme.bodyMedium,
                 ),
               )
             ],
           ),
         ),
       ),
-
     );
   }
 }
