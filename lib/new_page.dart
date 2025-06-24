@@ -11,6 +11,8 @@ class NewPage extends StatefulWidget {
 
   const NewPage({super.key, required this.title});
 
+  String get titleText => title.replaceAll('_', ' ');
+
   @override
   State<NewPage> createState() => _NewPageState();
 }
@@ -28,8 +30,8 @@ class _NewPageState extends State<NewPage> {
 
   Future<void> _loadTexts() async {
 
-    final main = await rootBundle.loadString('assets/texts/{title}_{num}.txt');
-    final bottom = await rootBundle.loadString('assets/texts/new_body_2.txt');
+    final main = await rootBundle.loadString('assets/texts/${widget.title}_1.txt');
+    final bottom = await rootBundle.loadString('assets/texts/${widget.title}_2.txt');
     setState(() {
       mainBody = main;
       bottomBody = bottom;
@@ -41,12 +43,12 @@ class _NewPageState extends State<NewPage> {
   Widget build(BuildContext context) {
     if (isLoading) {
       return Scaffold(
-        appBar: AppBar(title: Text(widget.title)),
+        appBar: AppBar(title: Text(widget.titleText)),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
     return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
+      appBar: AppBar(title: Text(widget.titleText)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(

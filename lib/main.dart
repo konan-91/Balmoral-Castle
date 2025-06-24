@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'language_selection_screen.dart';
 import 'language_provider.dart';
-import 'visit_page.dart';
 import 'new_page.dart';
 
 void main() {
@@ -64,15 +63,15 @@ class MyHomePage extends StatelessWidget {
               },
             ),
             ListTile(
-              title: const Text('Visit'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const VisitPage(title: 'Visit'),
-                  ),
-                );
-              },
+                title: const Text('Visit'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const NewPage(title: 'Visit'),
+                    ),
+                  );
+                }
             ),
             ListTile(
               title: const Text('New for 2025'),
@@ -80,7 +79,7 @@ class MyHomePage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => const NewPage(title: 'New for 2025'),
+                    builder: (_) => const NewPage(title: 'New_for_2025'),
                   ),
                 );
               }
