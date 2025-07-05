@@ -95,11 +95,27 @@ class MyHomePage extends StatelessWidget {
                   );
                 }
             ),
-            const ListTile(
-              title: Text('Eat & Shop'),
+            ListTile(
+                title: const Text('Eat & Shop'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const NewPage(title: 'Eat_&_Shop'),
+                    ),
+                  );
+                }
             ),
-            const ListTile(
-              title: Text('Admission & Opening Times'),
+            ListTile(
+                title: const Text('Admission & Opening Times'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const NewPage(title: 'Admission_&_Opening_Times'),
+                    ),
+                  );
+                }
             ),
             const ListTile(
               title: Text('Copyright'),
