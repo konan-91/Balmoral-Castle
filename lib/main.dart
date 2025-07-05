@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:better_player/better_player.dart';
 import 'language_selection_screen.dart';
 import 'language_provider.dart';
 import 'new_page.dart';
+import 'video_player.dart';
 
 void main() {
   runApp(
