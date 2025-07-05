@@ -84,8 +84,16 @@ class MyHomePage extends StatelessWidget {
                 );
               }
             ),
-            const ListTile(
-              title: Text('Stay'),
+            ListTile(
+                title: const Text('Stay'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const NewPage(title: 'Stay'),
+                    ),
+                  );
+                }
             ),
             const ListTile(
               title: Text('Eat & Shop'),
