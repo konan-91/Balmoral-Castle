@@ -17,14 +17,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.12.0"
-  better_player:
+  better_player_enhanced:
     dependency: "direct main"
     description:
-      name: better_player
-      sha256: fc8883218ab7a2fd7e916956c1f59b5c26c3cab1e4dfd6f051901f5e4da39619
+      name: better_player_enhanced
+      sha256: a96a63b093b14700a78d141835128b33896849eb3b81f60769fb1fa3740e5bbb
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.84"
+    version: "0.0.5"
   boolean_selector:
     dependency: transitive
     description:

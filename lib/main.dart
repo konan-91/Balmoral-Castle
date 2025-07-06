@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:better_player/better_player.dart';
+import 'package:better_player_enhanced/better_player.dart';
 import 'language_selection_screen.dart';
 import 'language_provider.dart';
 import 'new_page.dart';
@@ -41,7 +41,6 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final language = context.watch<LanguageProvider>().language;
-    print('Current Language: $language'); // Debug, verifying lang selection works
 
     return Scaffold(
       appBar: AppBar(
