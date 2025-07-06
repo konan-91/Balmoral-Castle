@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:provider/provider.dart';
-import 'package:better_player_enhanced/better_player.dart';
 import 'language_selection_screen.dart';
 import 'language_provider.dart';
 import 'new_page.dart';
 import 'video_player.dart';
 
 void main() {
+  MediaKit.ensureInitialized();
+
   runApp(
     ChangeNotifierProvider(
       create: (_) => LanguageProvider(),
@@ -40,7 +42,7 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final language = context.watch<LanguageProvider>().language;
+    // final language = context.watch<LanguageProvider>().language; // This is a local variable and may not be necessary.
 
     return Scaffold(
       appBar: AppBar(
@@ -124,12 +126,21 @@ class MyHomePage extends StatelessWidget {
           ],
         ),
       ),
-      // body: const Center(child: Text('[Videos Here]')),
-      // Need a list 1:10, which will display images 1:10 * current_language, linking to videos 1:10 (with sub track * language)
       body: GridView.count(
         crossAxisCount: 1,
         children: List.generate(10, (index) {
-          return Center(
+          final videoNumber = index + 1;
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => VideoPlayer(
+                    videoPath: 'assets/videos/$videoNumber.mp4',
+                  ),
+                )
+              );
+            },
             child: Text(
               'Video $index',
               style: TextTheme.of(context).headlineSmall,

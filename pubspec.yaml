@@ -32,9 +32,10 @@ dependencies:
     sdk: flutter
   provider: ^6.1.5
   url_launcher: ^6.1.11
-  flutter_linkify: ^6.0.0
   flutter_markdown: ^0.6.10
-  better_player_enhanced: ^0.0.5
+  media_kit: ^1.1.11 # Primary Package
+  media_kit_video: ^1.2.5 # Video rendering
+  media_kit_libs_video: ^1.0.5 # Native video dependencies
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
