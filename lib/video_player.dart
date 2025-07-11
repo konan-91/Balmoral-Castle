@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
+import 'language_provider.dart';
 
 class VideoPlayer extends StatefulWidget {
   final String videoPath;
@@ -41,6 +42,8 @@ class _VideoPlayerState extends State<VideoPlayer> {
       // If it's just a filename, prepend the assets path
       assetPath = 'assets/videos/${widget.videoPath}';
     }
+
+    print(widget.videoPath);
 
     // Open the video file/asset
     await player.open(Media('asset:///$assetPath'));

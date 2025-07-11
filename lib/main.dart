@@ -120,8 +120,16 @@ class MyHomePage extends StatelessWidget {
                   );
                 }
             ),
-            const ListTile(
-              title: Text('Copyright'),
+            ListTile(
+                title: const Text('Copyright'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const NewPage(title: 'Copyright'),
+                    ),
+                  );
+                }
             ),
           ],
         ),
