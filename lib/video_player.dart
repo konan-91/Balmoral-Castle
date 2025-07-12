@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
+import 'package:provider/provider.dart';
 import 'language_provider.dart';
 
 class VideoPlayer extends StatefulWidget {
-  final String videoPath;
+  final String videoNumber;
 
-  const VideoPlayer({required this.videoPath, super.key});
+  const VideoPlayer({required this.videoNumber, super.key});
 
   @override
   State<VideoPlayer> createState() => _VideoPlayerState();
@@ -33,20 +34,12 @@ class _VideoPlayerState extends State<VideoPlayer> {
     // Create the video controller
     controller = VideoController(player);
 
-    // For assets, use the full asset path
-    String assetPath;
-    if (widget.videoPath.startsWith('assets/')) {
-      // If it's already an asset path, use it as is
-      assetPath = widget.videoPath;
-    } else {
-      // If it's just a filename, prepend the assets path
-      assetPath = 'assets/videos/${widget.videoPath}';
-    }
-
-    print(widget.videoPath);
+    // Create path to video and audio
+    String language = Provider.of<LanguageProvider>(context, listen: false).language;
+    String videoPath = 'assets/videos/${widget.videoNumber}.mp4';
 
     // Open the video file/asset
-    await player.open(Media('asset:///$assetPath'));
+    await player.open(Media('asset:///$videoPath'));
 
     setState(() {
       _isInitialized = true;
@@ -61,8 +54,9 @@ class _VideoPlayerState extends State<VideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
-      appBar: AppBar(title: Text("Video Player")),
+      appBar: AppBar(title: Text("Video ${widget.videoNumber}")),
       body: _isInitialized
           ? Video(
         controller: controller,

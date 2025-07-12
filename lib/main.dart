@@ -144,13 +144,13 @@ class MyHomePage extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (_) => VideoPlayer(
-                    videoPath: 'assets/videos/$videoNumber.mp4',
+                    videoNumber: videoNumber.toString(),
                   ),
                 )
               );
             },
             child: Text(
-              'Video $index',
+              'Video $videoNumber',
               style: TextTheme.of(context).headlineSmall,
             ),
           );
