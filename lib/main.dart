@@ -5,6 +5,7 @@ import 'language_selection_screen.dart';
 import 'language_provider.dart';
 import 'new_page.dart';
 import 'video_player.dart';
+import 'map_page.dart';
 
 void main() {
   MediaKit.ensureInitialized();
@@ -19,7 +20,6 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
 
 
   // Global Appearance Controls
@@ -42,11 +42,23 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    // final language = context.watch<LanguageProvider>().language; // This is a local variable and may not be necessary.
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Balmoral Castle'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.map),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const MapPage(),
+                ),
+              );
+            },
+            tooltip: 'Open Map',
+          ),
+        ],
       ),
       drawer: Drawer(
         child: ListView(
@@ -77,15 +89,15 @@ class MyHomePage extends StatelessWidget {
                 }
             ),
             ListTile(
-              title: const Text('New for 2025'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const NewPage(title: 'New_for_2025'),
-                  ),
-                );
-              }
+                title: const Text('New for 2025'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const NewPage(title: 'New_for_2025'),
+                    ),
+                  );
+                }
             ),
             ListTile(
                 title: const Text('Stay'),
@@ -141,12 +153,12 @@ class MyHomePage extends StatelessWidget {
           return GestureDetector(
             onTap: () {
               Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => VideoPlayer(
-                    videoNumber: videoNumber.toString(),
-                  ),
-                )
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => VideoPlayer(
+                      videoNumber: videoNumber.toString(),
+                    ),
+                  )
               );
             },
             child: Text(
