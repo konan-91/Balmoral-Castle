@@ -45,14 +45,31 @@ class _VideoPlayerState extends State<VideoPlayer> {
     // Wait for tracks to be available and set audio track
     await Future.delayed(Duration(milliseconds: 500));
 
+
+    // Print all available audio track names
+    final audioTracks = player.state.tracks.audio;
+    print('Available audio tracks:');
+    for (int i = 0; i < audioTracks.length; i++) {
+      final track = audioTracks[i];
+      print('  Track $i: id="${track.id}", title=1"${track.title}", language="${track.language}"');
+    }
+
     // Find and set the audio track by language code
     String targetLanguageCode;
     if (language == "English") {
       targetLanguageCode = "eng";
+    } else if (language == "German") {
+      targetLanguageCode = "ger";
+    } else if (language == "French") {
+      targetLanguageCode = "fre";
+    } else if (language == "Dutch") {
+      targetLanguageCode = "nld";
+    } else if (language == "Italian") {
+      targetLanguageCode = "ita";
     } else if (language == "Spanish") {
       targetLanguageCode = "spa";
     } else {
-      throw Exception('Language "$language" not supported. Use "English" or "Spanish"');
+      throw Exception('Language "$language" not supported!');
     }
 
     final selectedTrack = audioTracks.where((track) => track.language == targetLanguageCode).firstOrNull;
