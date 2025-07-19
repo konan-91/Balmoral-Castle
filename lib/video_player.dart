@@ -38,8 +38,29 @@ class _VideoPlayerState extends State<VideoPlayer> {
     String language = Provider.of<LanguageProvider>(context, listen: false).language;
     String videoPath = 'assets/videos/${widget.videoNumber}.mp4';
 
-    // Open the video file/asset
+
+// Open the video file/asset
     await player.open(Media('asset:///$videoPath'));
+
+    // Wait for tracks to be available and set audio track
+    await Future.delayed(Duration(milliseconds: 500));
+
+    // Find and set the audio track by language code
+    String targetLanguageCode;
+    if (language == "English") {
+      targetLanguageCode = "eng";
+    } else if (language == "Spanish") {
+      targetLanguageCode = "spa";
+    } else {
+      throw Exception('Language "$language" not supported. Use "English" or "Spanish"');
+    }
+
+    final selectedTrack = audioTracks.where((track) => track.language == targetLanguageCode).firstOrNull;
+    if (selectedTrack == null) {
+      throw Exception('Audio track with language "$targetLanguageCode" not found');
+    }
+    await player.setAudioTrack(selectedTrack);
+
 
     setState(() {
       _isInitialized = true;
