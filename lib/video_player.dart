@@ -38,46 +38,45 @@ class _VideoPlayerState extends State<VideoPlayer> {
     String language = Provider.of<LanguageProvider>(context, listen: false).language;
     String videoPath = 'assets/videos/${widget.videoNumber}.mp4';
 
-
-// Open the video file/asset
     await player.open(Media('asset:///$videoPath'));
+    await player.pause();
 
-    // Wait for tracks to be available and set audio track
-    await Future.delayed(Duration(milliseconds: 500));
+    // Wait for tracks to be available - don't use set delay...
+    final tracks = await player.stream.tracks.firstWhere((t) => t.audio.isNotEmpty);
+    final audioTracks = tracks.audio;
 
-
-    // Print all available audio track names
-    final audioTracks = player.state.tracks.audio;
+    // DEBUGGING PRINTING!!
     print('Available audio tracks:');
     for (int i = 0; i < audioTracks.length; i++) {
       final track = audioTracks[i];
       print('  Track $i: id="${track.id}", title=1"${track.title}", language="${track.language}"');
     }
+    // DEBUGGING END!!
 
-    // Find and set the audio track by language code
-    String targetLanguageCode;
+    String targetLanguage;
     if (language == "English") {
-      targetLanguageCode = "eng";
+      targetLanguage = "eng";
     } else if (language == "German") {
-      targetLanguageCode = "ger";
+      targetLanguage = "ger";
     } else if (language == "French") {
-      targetLanguageCode = "fre";
+      targetLanguage = "fre";
     } else if (language == "Dutch") {
-      targetLanguageCode = "nld";
+      targetLanguage = "nld";
     } else if (language == "Italian") {
-      targetLanguageCode = "ita";
+      targetLanguage = "ita";
     } else if (language == "Spanish") {
-      targetLanguageCode = "spa";
+      targetLanguage = "spa";
     } else {
       throw Exception('Language "$language" not supported!');
     }
 
-    final selectedTrack = audioTracks.where((track) => track.language == targetLanguageCode).firstOrNull;
-    if (selectedTrack == null) {
-      throw Exception('Audio track with language "$targetLanguageCode" not found');
+    final selectedTrack = audioTracks.where((track) => track.language == targetLanguage).firstOrNull;
+    if (selectedTrack != null) {
+      await player.setAudioTrack(selectedTrack);
+      await player.play(); // Only play if correct track is available
+    } else {
+      throw Exception('Audio track with language "$targetLanguage" not found');
     }
-    await player.setAudioTrack(selectedTrack);
-
 
     setState(() {
       _isInitialized = true;
