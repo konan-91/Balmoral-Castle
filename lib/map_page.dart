@@ -87,16 +87,6 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Map'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _resetZoom,
-            tooltip: 'Reset Zoom',
-          ),
-        ],
-      ),
       body: Stack(
         children: [
           InteractiveViewer(
@@ -108,6 +98,29 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
               child: Image.asset('assets/map/balmoral_map.png'),
             ),
           ),
+          // Back button (top-left)
+          Positioned(
+            top: 50,
+            left: 16,
+            child: FloatingActionButton(
+              heroTag: 'back_button',
+              onPressed: () => Navigator.of(context).pop(),
+              mini: true,
+              child: const Icon(Icons.arrow_back),
+            ),
+          ),
+          // Reset button (top-right)
+          Positioned(
+            top: 50,
+            right: 16,
+            child: FloatingActionButton(
+              heroTag: 'reset_button',
+              onPressed: _resetZoom,
+              mini: true,
+              child: const Icon(Icons.refresh),
+            ),
+          ),
+          // Zoom controls (bottom-right)
           Positioned(
             bottom: 16,
             right: 16,
