@@ -7,13 +7,14 @@ import 'new_page.dart';
 import 'video_player.dart';
 import 'map_page.dart';
 
+const Color regalBlue = Color(0xFF00426A);
+
 void main() {
   MediaKit.ensureInitialized();
-
   runApp(
     ChangeNotifierProvider(
       create: (_) => LanguageProvider(),
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
@@ -21,12 +22,10 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-
-  // Global Appearance Controls
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Drawer Example',
+      title: 'Balmoral Castle',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
       ),
@@ -38,24 +37,18 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key});
 
-  // App Start
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Balmoral Castle'),
         actions: [
           IconButton(
             icon: const Icon(Icons.map),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => const MapPage(),
-                ),
-              );
-            },
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const MapPage()),
+            ),
             tooltip: 'Open Map',
           ),
         ],
@@ -68,81 +61,16 @@ class MyHomePage extends StatelessWidget {
               decoration: BoxDecoration(color: Colors.blue),
               child: Text('Menu', style: TextStyle(color: Colors.white)),
             ),
-            ListTile(
-              title: const Text('Language'),
-              onTap: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (_) => LanguageSelectionScreen()),
-                );
-              },
-            ),
-            ListTile(
-                title: const Text('Visit'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const NewPage(title: 'Visit'),
-                    ),
-                  );
-                }
-            ),
-            ListTile(
-                title: const Text('New for 2025'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const NewPage(title: 'New_for_2025'),
-                    ),
-                  );
-                }
-            ),
-            ListTile(
-                title: const Text('Stay'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const NewPage(title: 'Stay'),
-                    ),
-                  );
-                }
-            ),
-            ListTile(
-                title: const Text('Eat & Shop'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const NewPage(title: 'Eat_&_Shop'),
-                    ),
-                  );
-                }
-            ),
-            ListTile(
-                title: const Text('Admission & Opening Times'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const NewPage(title: 'Admission_&_Opening_Times'),
-                    ),
-                  );
-                }
-            ),
-            ListTile(
-                title: const Text('Copyright'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const NewPage(title: 'Copyright'),
-                    ),
-                  );
-                }
-            ),
+            _menuTile(context, 'Language', () => Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (_) => const LanguageSelectionScreen()),
+            )),
+            _menuTile(context, 'Visit', () => _navigateTo(context, 'Visit')),
+            _menuTile(context, 'New for 2025', () => _navigateTo(context, 'New_for_2025')),
+            _menuTile(context, 'Stay', () => _navigateTo(context, 'Stay')),
+            _menuTile(context, 'Eat & Shop', () => _navigateTo(context, 'Eat_&_Shop')),
+            _menuTile(context, 'Admission & Opening Times', () => _navigateTo(context, 'Admission_&_Opening_Times')),
+            _menuTile(context, 'Copyright', () => _navigateTo(context, 'Copyright')),
           ],
         ),
       ),
@@ -151,23 +79,27 @@ class MyHomePage extends StatelessWidget {
         children: List.generate(10, (index) {
           final videoNumber = index + 1;
           return GestureDetector(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => VideoPlayer(
-                      videoNumber: videoNumber.toString(),
-                    ),
-                  )
-              );
-            },
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => VideoPlayer(videoNumber: videoNumber.toString()),
+              ),
+            ),
             child: Text(
               'Video $videoNumber',
-              style: TextTheme.of(context).headlineSmall,
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
           );
         }),
       ),
     );
   }
+
+  ListTile _menuTile(BuildContext context, String title, VoidCallback onTap) =>
+      ListTile(title: Text(title), onTap: onTap);
+
+  void _navigateTo(BuildContext context, String title) => Navigator.push(
+    context,
+    MaterialPageRoute(builder: (_) => NewPage(title: title)),
+  );
 }

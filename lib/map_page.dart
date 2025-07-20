@@ -105,7 +105,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
             child: FloatingActionButton(
               heroTag: 'back_button',
               onPressed: () => Navigator.of(context).pop(),
-              mini: true,
+              mini: false,
               child: const Icon(Icons.arrow_back),
             ),
           ),
@@ -116,7 +116,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
             child: FloatingActionButton(
               heroTag: 'reset_button',
               onPressed: _resetZoom,
-              mini: true,
+              mini: false,
               child: const Icon(Icons.refresh),
             ),
           ),
@@ -129,14 +129,14 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                 FloatingActionButton(
                   heroTag: 'zoom_in',
                   onPressed: _zoomIn,
-                  mini: true,
+                  mini: false,
                   child: const Icon(Icons.zoom_in),
                 ),
                 const SizedBox(height: 8),
                 FloatingActionButton(
                   heroTag: 'zoom_out',
                   onPressed: _zoomOut,
-                  mini: true,
+                  mini: false,
                   child: const Icon(Icons.zoom_out),
                 ),
               ],

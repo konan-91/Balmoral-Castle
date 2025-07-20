@@ -3,6 +3,7 @@ import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:provider/provider.dart';
 import 'language_provider.dart';
+import 'main.dart';
 
 class VideoPlayer extends StatefulWidget {
   final String videoNumber;
@@ -91,17 +92,52 @@ class _VideoPlayerState extends State<VideoPlayer> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      appBar: AppBar(title: Text("Video ${widget.videoNumber}")),
-      body: _isInitialized
-          ? Video(
-        controller: controller,
-        // Optional: Add controls
-        controls: AdaptiveVideoControls,
-      )
-          : Center(
-        child: CircularProgressIndicator(),
+      backgroundColor: regalBlue,
+      body: Stack(
+        children: [
+          _isInitialized
+              ? Video(
+            controller: controller,
+            // Optional: Add controls
+            controls: AdaptiveVideoControls,
+            // Set the background color for media_kit
+            fill: regalBlue,
+          )
+              : Center(
+            child: CircularProgressIndicator(),
+          ),
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 16,
+            left: 16,
+            right: 16,
+            child: Stack(
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: FloatingActionButton(
+                    mini: true,
+                    backgroundColor: regalBlue,
+                    foregroundColor: Colors.white,
+                    onPressed: () => Navigator.of(context).pop(),
+                    elevation: 4,
+                    child: Icon(Icons.arrow_back),
+                  ),
+                ),
+                Center(
+                  child: Text(
+                    "Video ${widget.videoNumber}",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
