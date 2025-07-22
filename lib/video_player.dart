@@ -69,7 +69,6 @@ class _VideoPlayerState extends State<VideoPlayer> {
   }
 
   Future<void> _selectAudioTrack(List<AudioTrack> audioTracks, String targetLanguage) async {
-    // Debug audio tracks
     debugPrint('Available audio tracks:');
     for (int i = 0; i < audioTracks.length; i++) {
       final track = audioTracks[i];
@@ -102,12 +101,91 @@ class _VideoPlayerState extends State<VideoPlayer> {
 
   Widget _buildVideoPlayer() {
     return _isInitialized
-        ? Video(
-      controller: controller,
-      controls: AdaptiveVideoControls,
-      fill: regalBlue,
+        ? Stack(
+      children: [
+        Video(
+          controller: controller,
+          controls: null, // Remove AdaptiveVideoControls
+          fill: regalBlue,
+        ),
+        _buildCustomControls(),
+      ],
     )
         : const Center(child: CircularProgressIndicator());
+  }
+
+  Widget _buildCustomControls() {
+    return Positioned(
+      bottom: MediaQuery.of(context).padding.bottom + 24,
+      left: 8,
+      right: 8,
+      child: StreamBuilder<Duration>(
+        stream: player.stream.position,
+        builder: (context, snapshot) {
+          final position = snapshot.data ?? Duration.zero;
+          final duration = player.state.duration;
+
+          String formatTime(Duration d) {
+            final minutes = d.inMinutes.remainder(60).toString().padLeft(2, '0');
+            final seconds = d.inSeconds.remainder(60).toString().padLeft(2, '0');
+            return '$minutes:$seconds';
+          }
+
+          final posMillis = position.inMilliseconds.toDouble();
+          final durMillis = duration.inMilliseconds.toDouble().clamp(1.0, double.infinity);
+
+          return Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              StreamBuilder<bool>(
+                stream: player.stream.playing,
+                builder: (context, snapshot) {
+                  final playing = snapshot.data ?? false;
+                  return IconButton(
+                    iconSize: 54,
+                    color: Colors.white,
+                    icon: Icon(playing ? Icons.pause : Icons.play_arrow),
+                    onPressed: () {
+                      playing ? player.pause() : player.play();
+                    },
+                  );
+                },
+              ),
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Slider(
+                      min: 0,
+                      max: durMillis,
+                      value: posMillis.clamp(0, durMillis),
+                      onChanged: (value) {
+                        player.seek(Duration(milliseconds: value.toInt()));
+                      },
+                      activeColor: Colors.white,
+                      inactiveColor: Colors.white30,
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 24.0), // Add padding to move text away from right edge
+                        child: Text(
+                          '${formatTime(position)} / ${formatTime(duration)}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
   }
 
   Widget _buildHeader(BuildContext context) {
@@ -123,7 +201,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
             foregroundColor: Colors.white,
             onPressed: () => Navigator.of(context).pop(),
             elevation: 4,
-            child: const Icon(Icons.arrow_back),
+            child: const Icon(Icons.arrow_back_rounded),
           ),
           Expanded(
             child: Text(
@@ -136,7 +214,6 @@ class _VideoPlayerState extends State<VideoPlayer> {
               ),
             ),
           ),
-          // Invisible placeholder to center the title
           const SizedBox(width: 40),
         ],
       ),
