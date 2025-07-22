@@ -100,7 +100,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
           ),
           // Back button (top-left)
           Positioned(
-            top: 50,
+            top: MediaQuery.of(context).padding.top + 16,
             left: 16,
             child: FloatingActionButton(
               heroTag: 'back_button',
@@ -111,7 +111,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
           ),
           // Reset button (top-right)
           Positioned(
-            top: 50,
+            top: MediaQuery.of(context).padding.top + 16,
             right: 16,
             child: FloatingActionButton(
               heroTag: 'reset_button',
@@ -122,22 +122,23 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
           ),
           // Zoom controls (bottom-right)
           Positioned(
-            bottom: 16,
+            bottom: MediaQuery.of(context).padding.bottom + 16,
             right: 16,
-            child: Column(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                FloatingActionButton(
-                  heroTag: 'zoom_in',
-                  onPressed: _zoomIn,
-                  mini: false,
-                  child: const Icon(Icons.zoom_in),
-                ),
-                const SizedBox(height: 8),
                 FloatingActionButton(
                   heroTag: 'zoom_out',
                   onPressed: _zoomOut,
                   mini: false,
                   child: const Icon(Icons.zoom_out),
+                ),
+                const SizedBox(width: 8),
+                FloatingActionButton(
+                  heroTag: 'zoom_in',
+                  onPressed: _zoomIn,
+                  mini: false,
+                  child: const Icon(Icons.zoom_in),
                 ),
               ],
             ),

@@ -118,7 +118,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
       child: Row(
         children: [
           FloatingActionButton(
-            mini: true,
+            mini: false,
             backgroundColor: regalBlue,
             foregroundColor: Colors.white,
             onPressed: () => Navigator.of(context).pop(),
