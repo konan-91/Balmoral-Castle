@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'main.dart';
 
 class MapPage extends StatefulWidget {
@@ -35,9 +36,7 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
-  void _resetZoom() {
-    _animateTo(Matrix4.identity());
-  }
+  void _resetZoom() => _animateTo(Matrix4.identity());
 
   void _zoomIn() => _applyZoom(_zoomFactor);
 
@@ -87,97 +86,59 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          InteractiveViewer(
-            transformationController: _controller,
-            minScale: _minScale,
-            maxScale: _maxScale,
-            constrained: true,
-            child: Center(
-              child: Image.asset('assets/map/balmoral_map.png'),
-            ),
-          ),
-          // Back button (top-left)
-          Positioned(
-            top: MediaQuery.of(context).padding.top + 16,
-            left: 16,
-            child: FloatingActionButton(
-              heroTag: 'back_button',
-              onPressed: () => Navigator.of(context).pop(),
-              mini: false,
-              backgroundColor: regalBlue, // Button background color
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(56), // Use large enough radius for circle
-                side: const BorderSide(color: Colors.white, width: 2),
-              ),
-              child: const Icon(
-                Icons.arrow_back_rounded,
-                color: Colors.white, // Icon color
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.dark, // Black status bar icons
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Stack(
+          children: [
+            InteractiveViewer(
+              transformationController: _controller,
+              minScale: _minScale,
+              maxScale: _maxScale,
+              constrained: true,
+              child: Center(
+                child: Image.asset('assets/map/balmoral_map.png'),
               ),
             ),
-          ),
-          // Reset button (top-right)
-          Positioned(
-            top: MediaQuery.of(context).padding.top + 16,
-            right: 16,
-            child: FloatingActionButton(
-              heroTag: 'reset_button',
-              onPressed: _resetZoom,
-              mini: false,
-              backgroundColor: regalBlue, // Button background color
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(56), // Use large enough radius for circle
-                side: const BorderSide(color: Colors.white, width: 2),
-              ),
-              child: const Icon(
-                Icons.refresh_rounded,
-                color: Colors.white, // Icon color
+            Positioned(
+              top: MediaQuery.of(context).padding.top + 16,
+              left: 16,
+              child: _buildButton(Icons.arrow_back_rounded, () => Navigator.of(context).pop()),
+            ),
+            Positioned(
+              top: MediaQuery.of(context).padding.top + 16,
+              right: 16,
+              child: _buildButton(Icons.refresh_rounded, _resetZoom),
+            ),
+            Positioned(
+              bottom: MediaQuery.of(context).padding.bottom + 16,
+              right: 16,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildButton(Icons.zoom_out_rounded, _zoomOut),
+                  const SizedBox(width: 8),
+                  _buildButton(Icons.zoom_in_rounded, _zoomIn),
+                ],
               ),
             ),
-          ),
-          // Zoom controls (bottom-right)
-          Positioned(
-            bottom: MediaQuery.of(context).padding.bottom + 16,
-            right: 16,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                FloatingActionButton(
-                  heroTag: 'zoom_out',
-                  onPressed: _zoomOut,
-                  mini: false,
-                  backgroundColor: regalBlue, // Button background color
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(56), // Use large enough radius for circle
-                    side: const BorderSide(color: Colors.white, width: 2),
-                  ),
-                  child: const Icon(
-                    Icons.zoom_out_rounded,
-                    color: Colors.white, // Icon color
-                  ),
-                ),
-                const SizedBox(width: 8),
-                FloatingActionButton(
-                  heroTag: 'zoom_in',
-                  onPressed: _zoomIn,
-                  mini: false,
-                  backgroundColor: regalBlue, // Button background color
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(56), // Use large enough radius for circle
-                    side: const BorderSide(color: Colors.white, width: 2),
-                  ),
-                  child: const Icon(
-                    Icons.zoom_in_rounded,
-                    color: Colors.white, // Icon color
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildButton(IconData icon, VoidCallback onPressed) {
+    return FloatingActionButton(
+      onPressed: onPressed,
+      heroTag: icon.toString(),
+      backgroundColor: regalBlue,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(56),
+        side: const BorderSide(color: Colors.white, width: 2),
+      ),
+      child: Icon(icon, color: Colors.white),
     );
   }
 }
