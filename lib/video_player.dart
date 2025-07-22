@@ -201,6 +201,10 @@ class _VideoPlayerState extends State<VideoPlayer> {
             foregroundColor: Colors.white,
             onPressed: () => Navigator.of(context).pop(),
             elevation: 4,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(56), // Use large enough radius for circle
+              side: const BorderSide(color: Colors.white, width: 2),
+            ),
             child: const Icon(Icons.arrow_back_rounded),
           ),
           Expanded(

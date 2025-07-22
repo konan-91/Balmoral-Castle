@@ -3,8 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
-// Render [title]_1, _2, _3... Depending on how many are present!
-
 class NewPage extends StatefulWidget {
   final String title;
 

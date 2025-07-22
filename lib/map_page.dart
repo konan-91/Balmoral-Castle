@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'main.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -106,7 +107,15 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
               heroTag: 'back_button',
               onPressed: () => Navigator.of(context).pop(),
               mini: false,
-              child: const Icon(Icons.arrow_back),
+              backgroundColor: regalBlue, // Button background color
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(56), // Use large enough radius for circle
+                side: const BorderSide(color: Colors.white, width: 2),
+              ),
+              child: const Icon(
+                Icons.arrow_back_rounded,
+                color: Colors.white, // Icon color
+              ),
             ),
           ),
           // Reset button (top-right)
@@ -117,7 +126,15 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
               heroTag: 'reset_button',
               onPressed: _resetZoom,
               mini: false,
-              child: const Icon(Icons.refresh),
+              backgroundColor: regalBlue, // Button background color
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(56), // Use large enough radius for circle
+                side: const BorderSide(color: Colors.white, width: 2),
+              ),
+              child: const Icon(
+                Icons.refresh_rounded,
+                color: Colors.white, // Icon color
+              ),
             ),
           ),
           // Zoom controls (bottom-right)
@@ -131,14 +148,30 @@ class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
                   heroTag: 'zoom_out',
                   onPressed: _zoomOut,
                   mini: false,
-                  child: const Icon(Icons.zoom_out),
+                  backgroundColor: regalBlue, // Button background color
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(56), // Use large enough radius for circle
+                    side: const BorderSide(color: Colors.white, width: 2),
+                  ),
+                  child: const Icon(
+                    Icons.zoom_out_rounded,
+                    color: Colors.white, // Icon color
+                  ),
                 ),
                 const SizedBox(width: 8),
                 FloatingActionButton(
                   heroTag: 'zoom_in',
                   onPressed: _zoomIn,
                   mini: false,
-                  child: const Icon(Icons.zoom_in),
+                  backgroundColor: regalBlue, // Button background color
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(56), // Use large enough radius for circle
+                    side: const BorderSide(color: Colors.white, width: 2),
+                  ),
+                  child: const Icon(
+                    Icons.zoom_in_rounded,
+                    color: Colors.white, // Icon color
+                  ),
                 ),
               ],
             ),
