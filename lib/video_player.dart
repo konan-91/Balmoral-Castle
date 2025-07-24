@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
@@ -14,10 +15,19 @@ class VideoPlayer extends StatefulWidget {
   State<VideoPlayer> createState() => _VideoPlayerState();
 }
 
-class _VideoPlayerState extends State<VideoPlayer> {
+class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin {
   late final Player player;
   late final VideoController controller;
+  late final AnimationController _fadeController;
+  late final Animation<double> _fadeAnimation;
+
   bool _isInitialized = false;
+  bool _showControls = true;
+  Timer? _hideTimer;
+
+  // Add explicit state tracking for play/pause
+  bool _isPlaying = false;
+  StreamSubscription<bool>? _playingSubscription;
 
   static const Map<String, String> _languageMap = {
     "English": "eng",
@@ -32,10 +42,72 @@ class _VideoPlayerState extends State<VideoPlayer> {
   void initState() {
     super.initState();
     _initializePlayer();
+    _setupAnimations();
+    _startHideTimer();
+  }
+
+  void _setupAnimations() {
+    _fadeController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _fadeController,
+      curve: Curves.easeInOut,
+    ));
+    _fadeController.forward();
+  }
+
+  void _startHideTimer() {
+    _hideTimer?.cancel();
+    _hideTimer = Timer(const Duration(seconds: 3), () {
+      if (mounted && _showControls && _isPlaying) {
+        _hideControls();
+      }
+    });
+  }
+
+  void _showControlsTemporarily() {
+    if (!_showControls) {
+      setState(() {
+        _showControls = true;
+      });
+      _fadeController.forward();
+    }
+    // Only start hide timer if video is playing
+    if (_isPlaying) {
+      _startHideTimer();
+    }
+  }
+
+  void _hideControls() {
+    if (_showControls) {
+      _fadeController.reverse().then((_) {
+        if (mounted) {
+          setState(() {
+            _showControls = false;
+          });
+        }
+      });
+    }
+  }
+
+  void _toggleControls() {
+    if (_showControls) {
+      _hideControls();
+    } else {
+      _showControlsTemporarily();
+    }
   }
 
   @override
   void dispose() {
+    _hideTimer?.cancel();
+    _playingSubscription?.cancel();
+    _fadeController.dispose();
     player.dispose();
     super.dispose();
   }
@@ -59,6 +131,21 @@ class _VideoPlayerState extends State<VideoPlayer> {
 
       final tracks = await player.stream.tracks.firstWhere((t) => t.audio.isNotEmpty);
       await _selectAudioTrack(tracks.audio, targetLanguage);
+
+      // Listen to play/pause state changes with explicit state management
+      _playingSubscription = player.stream.playing.listen((isPlaying) {
+        if (mounted) {
+          setState(() {
+            _isPlaying = isPlaying;
+          });
+
+          if (isPlaying && _showControls) {
+            _startHideTimer();
+          } else if (!isPlaying) {
+            _showControlsTemporarily();
+          }
+        }
+      });
 
       if (mounted) {
         setState(() => _isInitialized = true);
@@ -92,8 +179,12 @@ class _VideoPlayerState extends State<VideoPlayer> {
       backgroundColor: regalBlue,
       body: Stack(
         children: [
-          _buildVideoPlayer(),
-          _buildHeader(context),
+          GestureDetector(
+            onTap: _toggleControls,
+            behavior: HitTestBehavior.opaque,
+            child: _buildVideoPlayer(),
+          ),
+          if (_showControls) _buildControls(),
         ],
       ),
     );
@@ -101,17 +192,24 @@ class _VideoPlayerState extends State<VideoPlayer> {
 
   Widget _buildVideoPlayer() {
     return _isInitialized
-        ? Stack(
-      children: [
-        Video(
-          controller: controller,
-          controls: null, // Remove AdaptiveVideoControls
-          fill: regalBlue,
-        ),
-        _buildCustomControls(),
-      ],
+        ? Video(
+      controller: controller,
+      controls: null,
+      fill: regalBlue,
     )
         : const Center(child: CircularProgressIndicator());
+  }
+
+  Widget _buildControls() {
+    return FadeTransition(
+      opacity: _fadeAnimation,
+      child: Stack(
+        children: [
+          _buildHeader(context),
+          _buildCustomControls(),
+        ],
+      ),
+    );
   }
 
   Widget _buildCustomControls() {
@@ -137,18 +235,18 @@ class _VideoPlayerState extends State<VideoPlayer> {
           return Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              StreamBuilder<bool>(
-                stream: player.stream.playing,
-                builder: (context, snapshot) {
-                  final playing = snapshot.data ?? false;
-                  return IconButton(
-                    iconSize: 54,
-                    color: Colors.white,
-                    icon: Icon(playing ? Icons.pause : Icons.play_arrow),
-                    onPressed: () {
-                      playing ? player.pause() : player.play();
-                    },
-                  );
+              // Use the explicit state instead of StreamBuilder
+              IconButton(
+                iconSize: 54,
+                color: Colors.white,
+                icon: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
+                onPressed: () async {
+                  if (_isPlaying) {
+                    await player.pause();
+                  } else {
+                    await player.play();
+                  }
+                  _showControlsTemporarily();
                 },
               ),
               Expanded(
@@ -161,6 +259,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
                       value: posMillis.clamp(0, durMillis),
                       onChanged: (value) {
                         player.seek(Duration(milliseconds: value.toInt()));
+                        _showControlsTemporarily();
                       },
                       activeColor: Colors.white,
                       inactiveColor: Colors.white30,
@@ -168,7 +267,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: Padding(
-                        padding: const EdgeInsets.only(right: 24.0), // Add padding to move text away from right edge
+                        padding: const EdgeInsets.only(right: 24.0),
                         child: Text(
                           '${formatTime(position)} / ${formatTime(duration)}',
                           style: const TextStyle(
@@ -202,7 +301,7 @@ class _VideoPlayerState extends State<VideoPlayer> {
             onPressed: () => Navigator.of(context).pop(),
             elevation: 4,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(56), // Use large enough radius for circle
+              borderRadius: BorderRadius.circular(56),
               side: const BorderSide(color: Colors.white, width: 2),
             ),
             child: const Icon(Icons.arrow_back_rounded),
