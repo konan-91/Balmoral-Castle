@@ -68,6 +68,13 @@ flutter:
     - assets/images/
     - assets/videos/
     - assets/map/
+    - assets/fonts/
+
+  fonts:
+    - family: GillSansNova
+      fonts:
+        - asset: assets/fonts/NotoSans.ttf
+          weight: 400
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
