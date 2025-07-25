@@ -124,7 +124,7 @@ class MyHomePage extends StatelessWidget {
           ),
           body: GridView.count(
             crossAxisCount: 1,
-            padding: EdgeInsets.all(12.0),
+            padding: EdgeInsets.fromLTRB(12.0, 12.0, 12.0, 40.0),
             mainAxisSpacing: 12.0,
             crossAxisSpacing: 12.0,
             childAspectRatio: 111 / 67,
