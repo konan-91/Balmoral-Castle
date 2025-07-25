@@ -29,7 +29,6 @@ class MyApp extends StatelessWidget {
       title: 'Balmoral Castle',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
-        // Set the default font family for the entire app
         fontFamily: 'NotoSans',
       ),
       home: const LanguageSelectionScreen(),
@@ -42,6 +41,8 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final language = Provider.of<LanguageProvider>(context, listen: false).language;
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,
         child: Scaffold(
@@ -58,14 +59,12 @@ class MyHomePage extends StatelessWidget {
                 fontSize: 25,
                 fontWeight: FontWeight.normal,
                 color: Colors.white,
-                // Font family will be inherited from theme, but you can override here if needed
-                // fontFamily: 'GillSansNova',
               ),
             ),
             elevation: 8.0,
             shadowColor: Colors.black,
             leading: Padding(
-              padding: const EdgeInsets.only(left: 4.0), // Only drawer icon gets padding
+              padding: const EdgeInsets.only(left: 4.0),
               child: Builder(
                 builder: (context) => IconButton(
                   icon: const Icon(Icons.menu),
@@ -95,14 +94,20 @@ class MyHomePage extends StatelessWidget {
               physics: const ClampingScrollPhysics(),
               children: [
                 Container(
-                  height: 150,
+                  height: 140,
                   color: regalBlue,
                   alignment: Alignment.center,
-                  child: Image(
-                    image: AssetImage('assets/images/drawer_logo.jpg'),
-                    fit: BoxFit.fill,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25.0), // Adjust as needed
+                    child: Image(
+                      image: AssetImage('assets/images/drawer_logo.jpeg'),
+                      fit: BoxFit.contain, // Use contain to respect padding
+                    ),
                   ),
                 ),
+
+
+                const SizedBox(height: 28),
 
                 _menuTile(context, 'Language', () => Navigator.pushReplacement(
                   context,
@@ -122,7 +127,7 @@ class MyHomePage extends StatelessWidget {
             padding: EdgeInsets.all(12.0),
             mainAxisSpacing: 12.0,
             crossAxisSpacing: 12.0,
-            childAspectRatio: 16 / 9,
+            childAspectRatio: 111 / 67,
             children: List.generate(10, (index) {
               final videoNumber = index + 1;
               return GestureDetector(
@@ -139,8 +144,8 @@ class MyHomePage extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(2.0),
                     child: Image.asset(
-                      'assets/images/$videoNumber.png',
-                      fit: BoxFit.cover,
+                      'assets/images/${language}_$videoNumber.png',
+                      fit: BoxFit.fitWidth,
                     ),
                   ),
                 ),
@@ -152,14 +157,14 @@ class MyHomePage extends StatelessWidget {
 
   ListTile _menuTile(BuildContext context, String title, VoidCallback onTap) =>
       ListTile(
+        contentPadding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 12.0),
+        dense: true,
         tileColor: regalBlue,
         title: Text(
           title,
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 18,
-            // Font family will be inherited from theme, but you can override here if needed
-            // fontFamily: 'GillSansNova',
+            fontSize: 20,
           ),
         ),
         onTap: onTap,
