@@ -25,7 +25,6 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
   bool _showControls = true;
   Timer? _hideTimer;
 
-  // Add explicit state tracking for play/pause
   bool _isPlaying = false;
   StreamSubscription<bool>? _playingSubscription;
 
@@ -132,7 +131,6 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
       final tracks = await player.stream.tracks.firstWhere((t) => t.audio.isNotEmpty);
       await _selectAudioTrack(tracks.audio, targetLanguage);
 
-      // Listen to play/pause state changes with explicit state management
       _playingSubscription = player.stream.playing.listen((isPlaying) {
         if (mounted) {
           setState(() {
@@ -235,7 +233,6 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
           return Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Use the explicit state instead of StreamBuilder
               IconButton(
                 iconSize: 54,
                 color: Colors.white,
