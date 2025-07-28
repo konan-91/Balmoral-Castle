@@ -48,6 +48,7 @@ class MyHomePage extends StatelessWidget {
         child: Scaffold(
           backgroundColor: regalBlue,
           appBar: AppBar(
+            centerTitle: true,
             backgroundColor: regalBlue,
             iconTheme: const IconThemeData(
               color: Colors.white,

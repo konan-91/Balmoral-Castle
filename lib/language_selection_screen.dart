@@ -23,7 +23,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen>
   late Animation<Offset> _slideAnimation;
 
   final languages = [
-    {'name': 'English', 'flag': '🇺🇸'},
+    {'name': 'English', 'flag': '🇬🇧'},
     {'name': 'German', 'flag': '🇩🇪'},
     {'name': 'French', 'flag': '🇫🇷'},
     {'name': 'Dutch', 'flag': '🇳🇱'},
