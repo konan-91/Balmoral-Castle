@@ -271,7 +271,7 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
                             color: Colors.white,
                             fontSize: 16,
                           ),
-                        ),
+                        )
                       ),
                     ),
                   ],
@@ -305,7 +305,7 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
           ),
           Expanded(
             child: Text(
-              "Video ${widget.videoNumber}",
+              "", // "Video ${widget.videoNumber}",
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 20,
