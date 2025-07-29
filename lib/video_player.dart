@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:provider/provider.dart';
@@ -24,7 +25,6 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
   bool _isInitialized = false;
   bool _showControls = true;
   Timer? _hideTimer;
-
   bool _isPlaying = false;
   StreamSubscription<bool>? _playingSubscription;
 
@@ -36,6 +36,8 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
     "Italian": "ita",
     "Spanish": "spa",
   };
+
+  static const MethodChannel _channel = MethodChannel('video_path_channel');
 
   @override
   void initState() {
@@ -71,35 +73,22 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
 
   void _showControlsTemporarily() {
     if (!_showControls) {
-      setState(() {
-        _showControls = true;
-      });
+      setState(() => _showControls = true);
       _fadeController.forward();
     }
-    // Only start hide timer if video is playing
-    if (_isPlaying) {
-      _startHideTimer();
-    }
+    if (_isPlaying) _startHideTimer();
   }
 
   void _hideControls() {
     if (_showControls) {
       _fadeController.reverse().then((_) {
-        if (mounted) {
-          setState(() {
-            _showControls = false;
-          });
-        }
+        if (mounted) setState(() => _showControls = false);
       });
     }
   }
 
   void _toggleControls() {
-    if (_showControls) {
-      _hideControls();
-    } else {
-      _showControlsTemporarily();
-    }
+    _showControls ? _hideControls() : _showControlsTemporarily();
   }
 
   @override
@@ -114,61 +103,43 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
   Future<void> _initializePlayer() async {
     try {
       MediaKit.ensureInitialized();
-
       player = Player();
       controller = VideoController(player);
 
       final language = Provider.of<LanguageProvider>(context, listen: false).language;
       final targetLanguage = _languageMap[language];
+      if (targetLanguage == null) throw Exception('Unsupported language: $language');
 
-      if (targetLanguage == null) {
-        throw Exception('Language "$language" not supported');
-      }
-
-      await player.open(Media('asset:///assets/videos/${widget.videoNumber}.mp4'));
+      final videoPath = await _getPlatformVideoPath(widget.videoNumber);
+      await player.open(Media(videoPath));
       await player.pause();
 
       final tracks = await player.stream.tracks.firstWhere((t) => t.audio.isNotEmpty);
       await _selectAudioTrack(tracks.audio, targetLanguage);
 
       _playingSubscription = player.stream.playing.listen((isPlaying) {
-        if (mounted) {
-          setState(() {
-            _isPlaying = isPlaying;
-          });
-
-          if (isPlaying && _showControls) {
-            _startHideTimer();
-          } else if (!isPlaying) {
-            _showControlsTemporarily();
-          }
-        }
+        if (!mounted) return;
+        setState(() => _isPlaying = isPlaying);
+        isPlaying ? _startHideTimer() : _showControlsTemporarily();
       });
 
-      if (mounted) {
-        setState(() => _isInitialized = true);
-      }
+      if (mounted) setState(() => _isInitialized = true);
     } catch (e) {
-      debugPrint('Error initializing video player: $e');
+      debugPrint('Video player init error: $e');
     }
   }
 
+  Future<String> _getPlatformVideoPath(String name) async {
+    final String path = await _channel.invokeMethod('getVideoPath', {'name': name});
+    return path;
+  }
+
   Future<void> _selectAudioTrack(List<AudioTrack> audioTracks, String targetLanguage) async {
-    debugPrint('Available audio tracks:');
-    for (int i = 0; i < audioTracks.length; i++) {
-      final track = audioTracks[i];
-      debugPrint('  Track $i: id="${track.id}", title="${track.title}", language="${track.language}"');
-    }
-
-    final selectedTrack = audioTracks
-        .where((track) => track.language == targetLanguage)
-        .firstOrNull;
-
-    if (selectedTrack != null) {
-      await player.setAudioTrack(selectedTrack);
-    } else {
-      throw Exception('Audio track with language "$targetLanguage" not found');
-    }
+    final selectedTrack = audioTracks.firstWhere(
+          (track) => track.language == targetLanguage,
+      orElse: () => throw Exception('Track "$targetLanguage" not found'),
+    );
+    await player.setAudioTrack(selectedTrack);
   }
 
   @override
@@ -190,11 +161,7 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
 
   Widget _buildVideoPlayer() {
     return _isInitialized
-        ? Video(
-      controller: controller,
-      controls: null,
-      fill: regalBlue,
-    )
+        ? Video(controller: controller, controls: null, fill: regalBlue)
         : const Center(child: CircularProgressIndicator());
   }
 
@@ -221,11 +188,8 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
           final position = snapshot.data ?? Duration.zero;
           final duration = player.state.duration;
 
-          String formatTime(Duration d) {
-            final minutes = d.inMinutes.remainder(60).toString().padLeft(2, '0');
-            final seconds = d.inSeconds.remainder(60).toString().padLeft(2, '0');
-            return '$minutes:$seconds';
-          }
+          String formatTime(Duration d) =>
+              '${d.inMinutes.remainder(60).toString().padLeft(2, '0')}:${d.inSeconds.remainder(60).toString().padLeft(2, '0')}';
 
           final posMillis = position.inMilliseconds.toDouble();
           final durMillis = duration.inMilliseconds.toDouble().clamp(1.0, double.infinity);
@@ -238,11 +202,7 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
                 color: Colors.white,
                 icon: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
                 onPressed: () async {
-                  if (_isPlaying) {
-                    await player.pause();
-                  } else {
-                    await player.play();
-                  }
+                  _isPlaying ? await player.pause() : await player.play();
                   _showControlsTemporarily();
                 },
               ),
@@ -267,11 +227,8 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
                         padding: const EdgeInsets.only(right: 24.0),
                         child: Text(
                           '${formatTime(position)} / ${formatTime(duration)}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
-                        )
+                          style: const TextStyle(color: Colors.white, fontSize: 16),
+                        ),
                       ),
                     ),
                   ],
@@ -292,7 +249,6 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
       child: Row(
         children: [
           FloatingActionButton(
-            mini: false,
             backgroundColor: regalBlue,
             foregroundColor: Colors.white,
             onPressed: () => Navigator.of(context).pop(),
@@ -305,13 +261,9 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
           ),
           Expanded(
             child: Text(
-              "", // "Video ${widget.videoNumber}",
+              "", // or add video title here
               textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w500,
-                color: Colors.white,
-              ),
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: Colors.white),
             ),
           ),
           const SizedBox(width: 40),
