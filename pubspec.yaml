@@ -68,9 +68,3 @@ flutter:
     - assets/images/
     - assets/videos/
     - assets/map/
-
-  fonts:
-    - family: GillSansNova
-      fonts:
-        - asset: assets/fonts/NotoSans.ttf
-          weight: 400
