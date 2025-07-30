@@ -32,7 +32,7 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
     "English": "eng",
     "German": "ger",
     "French": "fre",
-    "Dutch": "nld",
+    "Dutch": "dut",
     "Italian": "ita",
     "Spanish": "spa",
   };
