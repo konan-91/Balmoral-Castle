@@ -8,16 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
-		2F11B97D2E379F32002C3E9F /* 1.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 2F11B9732E379F32002C3E9F /* 1.mp4 */; };
-		2F11B97E2E379F32002C3E9F /* 5.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 2F11B9772E379F32002C3E9F /* 5.mp4 */; };
-		2F11B97F2E379F32002C3E9F /* 2.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 2F11B9742E379F32002C3E9F /* 2.mp4 */; };
-		2F11B9802E379F32002C3E9F /* 4.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 2F11B9762E379F32002C3E9F /* 4.mp4 */; };
-		2F11B9812E379F32002C3E9F /* 6.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 2F11B9782E379F32002C3E9F /* 6.mp4 */; };
-		2F11B9822E379F32002C3E9F /* 7.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 2F11B9792E379F32002C3E9F /* 7.mp4 */; };
-		2F11B9832E379F32002C3E9F /* 8.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 2F11B97A2E379F32002C3E9F /* 8.mp4 */; };
-		2F11B9842E379F32002C3E9F /* 3.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 2F11B9752E379F32002C3E9F /* 3.mp4 */; };
-		2F11B9852E379F32002C3E9F /* 9.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 2F11B97B2E379F32002C3E9F /* 9.mp4 */; };
-		2F11B9862E379F32002C3E9F /* 10.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 2F11B97C2E379F32002C3E9F /* 10.mp4 */; };
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		5645352BC5EA8524EB8E50E5 /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 250045F8749CBAB07D09D657 /* Pods_RunnerTests.framework */; };
@@ -56,16 +46,6 @@
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		1E4D23164696E77E15DCE00C /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 		250045F8749CBAB07D09D657 /* Pods_RunnerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RunnerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		2F11B9732E379F32002C3E9F /* 1.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = 1.mp4; sourceTree = "<group>"; };
-		2F11B9742E379F32002C3E9F /* 2.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = 2.mp4; sourceTree = "<group>"; };
-		2F11B9752E379F32002C3E9F /* 3.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = 3.mp4; sourceTree = "<group>"; };
-		2F11B9762E379F32002C3E9F /* 4.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = 4.mp4; sourceTree = "<group>"; };
-		2F11B9772E379F32002C3E9F /* 5.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = 5.mp4; sourceTree = "<group>"; };
-		2F11B9782E379F32002C3E9F /* 6.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = 6.mp4; sourceTree = "<group>"; };
-		2F11B9792E379F32002C3E9F /* 7.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = 7.mp4; sourceTree = "<group>"; };
-		2F11B97A2E379F32002C3E9F /* 8.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = 8.mp4; sourceTree = "<group>"; };
-		2F11B97B2E379F32002C3E9F /* 9.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = 9.mp4; sourceTree = "<group>"; };
-		2F11B97C2E379F32002C3E9F /* 10.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = 10.mp4; sourceTree = "<group>"; };
 		331C807B294A618700263BE5 /* RunnerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunnerTests.swift; sourceTree = "<group>"; };
 		331C8081294A63A400263BE5 /* RunnerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RunnerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
@@ -144,16 +124,6 @@
 				331C8082294A63A400263BE5 /* RunnerTests */,
 				98BEAFB31986A2423BAC3126 /* Pods */,
 				827F55E9B0BC1A54D6AB61D3 /* Frameworks */,
-				2F11B9732E379F32002C3E9F /* 1.mp4 */,
-				2F11B9742E379F32002C3E9F /* 2.mp4 */,
-				2F11B9752E379F32002C3E9F /* 3.mp4 */,
-				2F11B9762E379F32002C3E9F /* 4.mp4 */,
-				2F11B9772E379F32002C3E9F /* 5.mp4 */,
-				2F11B9782E379F32002C3E9F /* 6.mp4 */,
-				2F11B9792E379F32002C3E9F /* 7.mp4 */,
-				2F11B97A2E379F32002C3E9F /* 8.mp4 */,
-				2F11B97B2E379F32002C3E9F /* 9.mp4 */,
-				2F11B97C2E379F32002C3E9F /* 10.mp4 */,
 			);
 			sourceTree = "<group>";
 		};
@@ -292,16 +262,6 @@
 				97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */,
 				3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */,
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
-				2F11B97D2E379F32002C3E9F /* 1.mp4 in Resources */,
-				2F11B97E2E379F32002C3E9F /* 5.mp4 in Resources */,
-				2F11B97F2E379F32002C3E9F /* 2.mp4 in Resources */,
-				2F11B9802E379F32002C3E9F /* 4.mp4 in Resources */,
-				2F11B9812E379F32002C3E9F /* 6.mp4 in Resources */,
-				2F11B9822E379F32002C3E9F /* 7.mp4 in Resources */,
-				2F11B9832E379F32002C3E9F /* 8.mp4 in Resources */,
-				2F11B9842E379F32002C3E9F /* 3.mp4 in Resources */,
-				2F11B9852E379F32002C3E9F /* 9.mp4 in Resources */,
-				2F11B9862E379F32002C3E9F /* 10.mp4 in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

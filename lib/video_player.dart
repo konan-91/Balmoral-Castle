@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:provider/provider.dart';
@@ -36,8 +35,6 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
     "Italian": "ita",
     "Spanish": "spa",
   };
-
-  static const MethodChannel _channel = MethodChannel('video_path_channel');
 
   @override
   void initState() {
@@ -110,8 +107,7 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
       final targetLanguage = _languageMap[language];
       if (targetLanguage == null) throw Exception('Unsupported language: $language');
 
-      final videoPath = await _getPlatformVideoPath(widget.videoNumber);
-      await player.open(Media(videoPath));
+      await player.open(Media('asset:///assets/videos/${widget.videoNumber}.mp4'));
       await player.pause();
 
       final tracks = await player.stream.tracks.firstWhere((t) => t.audio.isNotEmpty);
@@ -127,11 +123,6 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
     } catch (e) {
       debugPrint('Video player init error: $e');
     }
-  }
-
-  Future<String> _getPlatformVideoPath(String name) async {
-    final String path = await _channel.invokeMethod('getVideoPath', {'name': name});
-    return path;
   }
 
   Future<void> _selectAudioTrack(List<AudioTrack> audioTracks, String targetLanguage) async {

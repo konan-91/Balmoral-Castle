@@ -1,6 +1,14 @@
 package com.balmoralcastle.balmoral_castle
 
 import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity : FlutterActivity()
+
+
+/* REVERTING TO /ASSETS
+package com.balmoralcastle.balmoral_castle
+
+import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
 import java.io.File
@@ -32,3 +40,4 @@ class MainActivity: FlutterActivity() {
             }
     }
 }
+ */
