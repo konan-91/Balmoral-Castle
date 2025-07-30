@@ -29,7 +29,6 @@ class MyApp extends StatelessWidget {
       title: 'Balmoral Castle',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
-        fontFamily: 'NotoSans',
       ),
       home: const LanguageSelectionScreen(),
     );

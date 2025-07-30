@@ -31,14 +31,6 @@ android {
         versionName = flutter.versionName
     }
 
-    /* REVERTING TO /ASSETS
-    sourceSets {
-        getByName("main") {
-            assets.srcDirs("src/main/assets")
-        }
-    }
-     */
-
     buildTypes {
         release {
             signingConfig = signingConfigs.getByName("debug") // TODO: Change to 'release' at release!

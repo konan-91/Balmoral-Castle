@@ -203,11 +203,9 @@ class _NewPageState extends State<NewPage> with TickerProviderStateMixin {
 
     return MarkdownStyleSheet(
       p: TextStyle(fontSize: 19,
-          fontFamily: 'NotoSans',
           fontWeight: FontWeight.w200,
           color: baseColor),
       h3: TextStyle(fontSize: 24,
-          fontFamily: 'NotoSans',
           fontWeight: FontWeight.w100,
           color: baseColor),
     );
