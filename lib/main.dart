@@ -134,7 +134,7 @@ class MyHomePage extends StatelessWidget {
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => VideoPlayer(videoNumber: videoNumber.toString()),
+                    builder: (_) => VideoPlayer(videoNumber: videoNumber),
                   ),
                 ),
                 child: Container(

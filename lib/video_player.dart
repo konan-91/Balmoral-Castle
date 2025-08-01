@@ -5,9 +5,10 @@ import 'package:media_kit_video/media_kit_video.dart';
 import 'package:provider/provider.dart';
 import 'language_provider.dart';
 import 'main.dart';
+import 'get_multiplier.dart';
 
 class VideoPlayer extends StatefulWidget {
-  final String videoNumber;
+  final int videoNumber;
 
   const VideoPlayer({required this.videoNumber, super.key});
 
@@ -16,7 +17,8 @@ class VideoPlayer extends StatefulWidget {
 }
 
 class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin {
-  late final Player player;
+  late final Player videoPlayer;
+  late final Player audioPlayer;
   late final VideoController controller;
   late final AnimationController _fadeController;
   late final Animation<double> _fadeAnimation;
@@ -25,21 +27,13 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
   bool _showControls = true;
   Timer? _hideTimer;
   bool _isPlaying = false;
-  StreamSubscription<bool>? _playingSubscription;
-
-  static const Map<String, String> _languageMap = {
-    "English": "eng",
-    "German": "ger",
-    "French": "fre",
-    "Dutch": "dut",
-    "Italian": "ita",
-    "Spanish": "spa",
-  };
+  StreamSubscription<bool>? _videoPlayingSubscription;
+  StreamSubscription<bool>? _audioPlayingSubscription;
 
   @override
   void initState() {
     super.initState();
-    _initializePlayer();
+    _initializePlayers();
     _setupAnimations();
     _startHideTimer();
   }
@@ -91,29 +85,43 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
   @override
   void dispose() {
     _hideTimer?.cancel();
-    _playingSubscription?.cancel();
+    _videoPlayingSubscription?.cancel();
+    _audioPlayingSubscription?.cancel();
     _fadeController.dispose();
-    player.dispose();
+    videoPlayer.dispose();
+    audioPlayer.dispose();
     super.dispose();
   }
 
-  Future<void> _initializePlayer() async {
+  Future<void> _initializePlayers() async {
     try {
       MediaKit.ensureInitialized();
-      player = Player();
-      controller = VideoController(player);
+      videoPlayer = Player();
+      audioPlayer = Player();
+      controller = VideoController(videoPlayer);
 
       final language = Provider.of<LanguageProvider>(context, listen: false).language;
-      final targetLanguage = _languageMap[language];
-      if (targetLanguage == null) throw Exception('Unsupported language: $language');
 
-      await player.open(Media('asset:///assets/videos/${widget.videoNumber}.mp4'));
-      await player.pause();
+      // Load soundless video
+      await videoPlayer.open(Media('asset:///assets/videos/${widget.videoNumber}.mp4'));
+      print('Video loaded');
 
-      final tracks = await player.stream.tracks.firstWhere((t) => t.audio.isNotEmpty);
-      await _selectAudioTrack(tracks.audio, targetLanguage);
+      // Load audio file
+      await audioPlayer.open(Media('asset:///assets/audio/${language}_${widget.videoNumber}.mp3'));
+      print('Audio loaded');
 
-      _playingSubscription = player.stream.playing.listen((isPlaying) {
+      // Get speed multiplier and apply to video
+      final multiplier = await getMultiplier(language, widget.videoNumber);
+      await videoPlayer.setRate(multiplier);
+      print('Video speed set to $multiplier');
+
+      // Pause both players initially
+      await videoPlayer.pause();
+      await audioPlayer.pause();
+      print('Players paused');
+
+      // Listen to playing state changes
+      _videoPlayingSubscription = videoPlayer.stream.playing.listen((isPlaying) {
         if (!mounted) return;
         setState(() => _isPlaying = isPlaying);
         isPlaying ? _startHideTimer() : _showControlsTemporarily();
@@ -125,12 +133,25 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
     }
   }
 
-  Future<void> _selectAudioTrack(List<AudioTrack> audioTracks, String targetLanguage) async {
-    final selectedTrack = audioTracks.firstWhere(
-          (track) => track.language == targetLanguage,
-      orElse: () => throw Exception('Track "$targetLanguage" not found'),
-    );
-    await player.setAudioTrack(selectedTrack);
+  Future<void> _play() async {
+    await Future.wait([
+      videoPlayer.play(),
+      audioPlayer.play(),
+    ]);
+  }
+
+  Future<void> _pause() async {
+    await Future.wait([
+      videoPlayer.pause(),
+      audioPlayer.pause(),
+    ]);
+  }
+
+  Future<void> _seek(Duration position) async {
+    await Future.wait([
+      videoPlayer.seek(position),
+      audioPlayer.seek(position),
+    ] as Iterable<Future>);
   }
 
   @override
@@ -174,10 +195,10 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
       left: 8,
       right: 8,
       child: StreamBuilder<Duration>(
-        stream: player.stream.position,
+        stream: audioPlayer.stream.position, // Use audio position as reference
         builder: (context, snapshot) {
           final position = snapshot.data ?? Duration.zero;
-          final duration = player.state.duration;
+          final duration = audioPlayer.state.duration; // Use audio duration as reference
 
           String formatTime(Duration d) =>
               '${d.inMinutes.remainder(60).toString().padLeft(2, '0')}:${d.inSeconds.remainder(60).toString().padLeft(2, '0')}';
@@ -193,7 +214,7 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
                 color: Colors.white,
                 icon: Icon(_isPlaying ? Icons.pause : Icons.play_arrow),
                 onPressed: () async {
-                  _isPlaying ? await player.pause() : await player.play();
+                  _isPlaying ? await _pause() : await _play();
                   _showControlsTemporarily();
                 },
               ),
@@ -206,7 +227,7 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
                       max: durMillis,
                       value: posMillis.clamp(0, durMillis),
                       onChanged: (value) {
-                        player.seek(Duration(milliseconds: value.toInt()));
+                        _seek(Duration(milliseconds: value.toInt()));
                         _showControlsTemporarily();
                       },
                       activeColor: Colors.white,
