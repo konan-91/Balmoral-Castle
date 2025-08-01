@@ -147,6 +147,7 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
     ]);
   }
 
+  // TODO: fix this so that the seek is also scaled
   Future<void> _seek(Duration position) async {
     await Future.wait([
       videoPlayer.seek(position),
