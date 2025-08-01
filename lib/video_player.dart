@@ -147,12 +147,22 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
     ]);
   }
 
-  // TODO: fix this so that the seek is also scaled
   Future<void> _seek(Duration position) async {
+    // Get the audio duration and video duration
+    final audioDuration = audioPlayer.state.duration;
+    final videoDuration = videoPlayer.state.duration;
+
+    // Calculate the proportional position in the video based on audio position
+    // video seek time = video length * (audio current time / audio track length)
+    final videoPosition = Duration(
+        milliseconds: (videoDuration.inMilliseconds *
+            (position.inMilliseconds / audioDuration.inMilliseconds)).round()
+    );
+
     await Future.wait([
-      videoPlayer.seek(position),
+      videoPlayer.seek(videoPosition),
       audioPlayer.seek(position),
-    ] as Iterable<Future>);
+    ]);
   }
 
   @override
