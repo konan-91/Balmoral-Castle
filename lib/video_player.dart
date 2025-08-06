@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
@@ -28,11 +29,13 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
   Timer? _hideTimer;
   bool _isPlaying = false;
   StreamSubscription<bool>? _videoPlayingSubscription;
-  StreamSubscription<bool>? _audioPlayingSubscription;
+  StreamSubscription<Duration>? _audioPositionSubscription;
 
   @override
   void initState() {
     super.initState();
+    debugPrint('Platform: ${Platform.operatingSystem}');
+    debugPrint('Video number: ${widget.videoNumber}');
     _initializePlayers();
     _setupAnimations();
     _startHideTimer();
@@ -86,7 +89,7 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
   void dispose() {
     _hideTimer?.cancel();
     _videoPlayingSubscription?.cancel();
-    _audioPlayingSubscription?.cancel();
+    _audioPositionSubscription?.cancel();
     _fadeController.dispose();
     videoPlayer.dispose();
     audioPlayer.dispose();
@@ -102,29 +105,23 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
 
       final language = Provider.of<LanguageProvider>(context, listen: false).language;
 
-      // Load soundless video
       await videoPlayer.open(Media('asset:///assets/videos/${widget.videoNumber}.mp4'));
-      print('Video loaded');
-
-      // Load audio file
       await audioPlayer.open(Media('asset:///assets/audio/${language}_${widget.videoNumber}.mp3'));
-      print('Audio loaded');
 
-      // Get speed multiplier and apply to video
       final multiplier = await getMultiplier(language, widget.videoNumber);
       await videoPlayer.setRate(multiplier);
-      print('Video speed set to $multiplier');
 
-      // Pause both players initially
       await videoPlayer.pause();
       await audioPlayer.pause();
-      print('Players paused');
 
-      // Listen to playing state changes
       _videoPlayingSubscription = videoPlayer.stream.playing.listen((isPlaying) {
         if (!mounted) return;
         setState(() => _isPlaying = isPlaying);
         isPlaying ? _startHideTimer() : _showControlsTemporarily();
+      });
+
+      _audioPositionSubscription = audioPlayer.stream.position.listen((_) {
+        if (mounted) setState(() {});
       });
 
       if (mounted) setState(() => _isInitialized = true);
@@ -148,15 +145,13 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
   }
 
   Future<void> _seek(Duration position) async {
-    // Get the audio duration and video duration
     final audioDuration = audioPlayer.state.duration;
     final videoDuration = videoPlayer.state.duration;
 
-    // Calculate the proportional position in the video based on audio position
-    // video seek time = video length * (audio current time / audio track length)
     final videoPosition = Duration(
-        milliseconds: (videoDuration.inMilliseconds *
-            (position.inMilliseconds / audioDuration.inMilliseconds)).round()
+      milliseconds: (videoDuration.inMilliseconds *
+          (position.inMilliseconds / audioDuration.inMilliseconds))
+          .round(),
     );
 
     await Future.wait([
@@ -206,10 +201,10 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
       left: 8,
       right: 8,
       child: StreamBuilder<Duration>(
-        stream: audioPlayer.stream.position, // Use audio position as reference
+        stream: audioPlayer.stream.position,
         builder: (context, snapshot) {
           final position = snapshot.data ?? Duration.zero;
-          final duration = audioPlayer.state.duration; // Use audio duration as reference
+          final duration = audioPlayer.state.duration;
 
           String formatTime(Duration d) =>
               '${d.inMinutes.remainder(60).toString().padLeft(2, '0')}:${d.inSeconds.remainder(60).toString().padLeft(2, '0')}';
@@ -284,7 +279,7 @@ class _VideoPlayerState extends State<VideoPlayer> with TickerProviderStateMixin
           ),
           Expanded(
             child: Text(
-              "", // or add video title here
+              "", // Optional title
               textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w500, color: Colors.white),
             ),
